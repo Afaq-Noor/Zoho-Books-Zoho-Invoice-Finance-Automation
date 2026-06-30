@@ -1,0 +1,15 @@
+Subject: URGENT: Invoice #{{invoice.invoice_number}} is 14 Days Overdue
+
+Dear {{customer.display_name}},
+
+This is an urgent reminder that Invoice #{{invoice.invoice_number}} 
+for {{invoice.total}} is now 14 days overdue. 
+The due date was {{invoice.due_date}}.
+
+Please clear the payment immediately to avoid any service disruption.
+
+You can pay online using this link:
+{{invoice.payment_link}}
+
+Regards,
+Your Company Name

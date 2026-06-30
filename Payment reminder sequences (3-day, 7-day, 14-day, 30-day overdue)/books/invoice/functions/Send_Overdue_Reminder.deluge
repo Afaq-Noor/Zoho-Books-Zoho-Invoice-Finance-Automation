@@ -1,0 +1,105 @@
+
+// ============================================================
+// FUNCTION: Send_Overdue_Reminder
+// DESCRIPTION: Calculates days overdue and sets trigger field
+// ============================================================
+info "=== STARTING SEND_OVERDUE_REMINDER ===";
+// 1. Get invoice data from the map
+invoiceID = invoice.get("invoice_id");
+dueDate = invoice.get("due_date");
+invoiceStatus = invoice.get("status");
+info "Invoice ID: " + invoiceID;
+info "Due Date: " + dueDate;
+info "Invoice Status: " + invoiceStatus;
+// 2. Check if invoice is overdue
+if(invoiceStatus != "overdue" && invoiceStatus != "partially_paid")
+{
+	info "Status not overdue. Status: " + invoiceStatus;
+	return;
+}
+// 3. Check due date
+if(dueDate == null || dueDate == "")
+{
+	info "ERROR: Due date not found.";
+	return;
+}
+// 4. Calculate days overdue
+dueDateObj = dueDate.toDate();
+todayObj = zoho.currentdate;
+daysOverdue = (todayObj.toLong() - dueDateObj.toLong()) / (24 * 60 * 60 * 1000);
+info "Days Overdue: " + daysOverdue;
+// 5. Determine which reminder to send
+trackingField = "";
+triggerValue = "";
+if(daysOverdue >= 3 && daysOverdue < 7)
+{
+	trackingField = "cf_track_if_3_day_reminder_sent";
+	triggerValue = "3-day";
+}
+else if(daysOverdue >= 7 && daysOverdue < 14)
+{
+	trackingField = "cf_track_if_7_day_reminder_sent";
+	triggerValue = "7-day";
+}
+else if(daysOverdue >= 14 && daysOverdue < 30)
+{
+	trackingField = "cf_track_if_14_day_reminder_sent";
+	triggerValue = "14-day";
+}
+else if(daysOverdue >= 30)
+{
+	trackingField = "cf_track_if_30_day_reminder_sent";
+	triggerValue = "30-day";
+}
+else
+{
+	info "Not overdue enough. Days: " + daysOverdue;
+	return;
+}
+info "Tracking Field: " + trackingField;
+info "Trigger Value: " + triggerValue;
+// 6. Check if already sent
+trackingFieldValue = invoice.get(trackingField);
+if(trackingFieldValue == true)
+{
+	info "Reminder already sent. Skipping.";
+	return;
+}
+// ============================================================
+// STEP 7 - UPDATE INVOICE
+// ============================================================
+// Organization ID
+orgID = organization.get("organization_id");
+info "Organization ID: " + orgID;
+// Build custom fields list
+customFields = List();
+// Reminder Trigger field
+triggerCF = Map();
+triggerCF.put("api_name","cf_reminder_trigger");
+triggerCF.put("value",triggerValue);
+customFields.add(triggerCF);
+// Tracking checkbox
+trackingCF = Map();
+trackingCF.put("api_name",trackingField);
+trackingCF.put("value",true);
+customFields.add(trackingCF);
+// Update map
+updateMap = Map();
+updateMap.put("custom_fields",customFields);
+info "========================";
+info "UPDATE MAP";
+info updateMap;
+info "========================";
+// Update invoice
+response = zoho.books.updateRecord("Invoices",orgID,invoiceID,updateMap,"books_connection");
+info "========================";
+info "API RESPONSE";
+info response;
+info "========================";
+// Read invoice again to verify
+updatedInvoice = zoho.books.getRecordsByID("Invoices",orgID,invoiceID,"books_connection");
+info "========================";
+info "UPDATED INVOICE";
+info updatedInvoice;
+info "========================";
+info "=== FUNCTION COMPLETED ===";

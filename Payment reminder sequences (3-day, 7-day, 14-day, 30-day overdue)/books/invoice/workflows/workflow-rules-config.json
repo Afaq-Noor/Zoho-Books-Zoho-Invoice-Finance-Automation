@@ -1,0 +1,100 @@
+{
+    "workflow_rules": [
+        {
+            "name": "Send 3-Day Overdue Reminder",
+            "module": "Invoice",
+            "type": "Event Based",
+            "action_type": "Edited",
+            "execute_when": "Any field is updated",
+            "execute_on": "Edited each time",
+            "condition": {
+                "field": "cf_reminder_trigger",
+                "operator": "equals",
+                "value": "3-day"
+            },
+            "actions": [
+                {
+                    "type": "Email Alert",
+                    "alert_name": "3-Day Overdue Alert"
+                },
+                {
+                    "type": "Field Update",
+                    "field": "cf_reminder_trigger",
+                    "value": null
+                }
+            ]
+        },
+        {
+            "name": "Send 7-Day Overdue Reminder",
+            "module": "Invoice",
+            "type": "Event Based",
+            "action_type": "Edited",
+            "execute_when": "Any field is updated",
+            "execute_on": "Edited each time",
+            "condition": {
+                "field": "cf_reminder_trigger",
+                "operator": "equals",
+                "value": "7-day"
+            },
+            "actions": [
+                {
+                    "type": "Email Alert",
+                    "alert_name": "7-Day Overdue Alert"
+                },
+                {
+                    "type": "Field Update",
+                    "field": "cf_reminder_trigger",
+                    "value": null
+                }
+            ]
+        },
+        {
+            "name": "Send 14-Day Overdue Reminder",
+            "module": "Invoice",
+            "type": "Event Based",
+            "action_type": "Edited",
+            "execute_when": "Any field is updated",
+            "execute_on": "Edited each time",
+            "condition": {
+                "field": "cf_reminder_trigger",
+                "operator": "equals",
+                "value": "14-day"
+            },
+            "actions": [
+                {
+                    "type": "Email Alert",
+                    "alert_name": "14-Day Overdue Alert"
+                },
+                {
+                    "type": "Field Update",
+                    "field": "cf_reminder_trigger",
+                    "value": null
+                }
+            ]
+        },
+        {
+            "name": "Send 30-Day Overdue Reminder",
+            "module": "Invoice",
+            "type": "Event Based",
+            "action_type": "Edited",
+            "execute_when": "Any field is updated",
+            "execute_on": "Edited each time",
+            "condition": {
+                "field": "cf_reminder_trigger",
+                "operator": "equals",
+                "value": "30-day"
+            },
+            "actions": [
+                {
+                    "type": "Email Alert",
+                    "alert_name": "30-Day Overdue Alert"
+                },
+                {
+                    "type": "Field Update",
+                    "field": "cf_reminder_trigger",
+                    "value": null
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,17 @@
+Subject: Reminder: Invoice #{{invoice.invoice_number}} is 3 Days Overdue
+
+Dear {{customer.display_name}},
+
+This is a friendly reminder that Invoice #{{invoice.invoice_number}} 
+for {{invoice.total}} was due on {{invoice.due_date}}. 
+It is currently 3 days overdue.
+
+Please make the payment at your earliest convenience.
+
+You can pay online using this link:
+{{invoice.payment_link}}
+
+Thank you for your business.
+
+Best regards,
+Your Company Name

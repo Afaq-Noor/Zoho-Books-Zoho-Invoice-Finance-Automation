@@ -1,0 +1,49 @@
+{
+  "custom_fields": [
+    {
+      "label": "Reminder Trigger",
+      "api_name": "cf_reminder_trigger",
+      "type": "Text Box (Single Line)",
+      "module": "Invoice",
+      "purpose": "Stores the reminder stage to trigger workflow",
+      "mandatory": false,
+      "show_in_pdf": false
+    },
+    {
+      "label": "Track if 3-day reminder sent",
+      "api_name": "cf_track_if_3_day_reminder_sent",
+      "type": "Check Box",
+      "module": "Invoice",
+      "purpose": "Prevents duplicate 3-day reminders",
+      "mandatory": false,
+      "show_in_pdf": false
+    },
+    {
+      "label": "Track if 7-day reminder sent",
+      "api_name": "cf_track_if_7_day_reminder_sent",
+      "type": "Check Box",
+      "module": "Invoice",
+      "purpose": "Prevents duplicate 7-day reminders",
+      "mandatory": false,
+      "show_in_pdf": false
+    },
+    {
+      "label": "Track if 14-day reminder sent",
+      "api_name": "cf_track_if_14_day_reminder_sent",
+      "type": "Check Box",
+      "module": "Invoice",
+      "purpose": "Prevents duplicate 14-day reminders",
+      "mandatory": false,
+      "show_in_pdf": false
+    },
+    {
+      "label": "Track if 30-day reminder sent",
+      "api_name": "cf_track_if_30_day_reminder_sent",
+      "type": "Check Box",
+      "module": "Invoice",
+      "purpose": "Prevents duplicate 30-day reminders",
+      "mandatory": false,
+      "show_in_pdf": false
+    }
+  ]
+}

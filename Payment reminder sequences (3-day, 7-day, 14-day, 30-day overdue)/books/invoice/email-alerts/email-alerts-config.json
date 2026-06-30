@@ -1,0 +1,40 @@
+{
+  "email_alerts": [
+    {
+      "name": "3-Day Overdue Alert",
+      "module": "Invoice",
+      "template": "3-Day Overdue Reminder",
+      "recipient": "Customer Email",
+      "cc": "",
+      "bcc": "",
+      "attach_pdf": true
+    },
+    {
+      "name": "7-Day Overdue Alert",
+      "module": "Invoice",
+      "template": "7-Day Overdue Reminder",
+      "recipient": "Customer Email",
+      "cc": "",
+      "bcc": "",
+      "attach_pdf": true
+    },
+    {
+      "name": "14-Day Overdue Alert",
+      "module": "Invoice",
+      "template": "14-Day Overdue Reminder",
+      "recipient": "Customer Email",
+      "cc": "",
+      "bcc": "",
+      "attach_pdf": true
+    },
+    {
+      "name": "30-Day Overdue Alert",
+      "module": "Invoice",
+      "template": "30-Day Overdue Reminder",
+      "recipient": "Customer Email",
+      "cc": "",
+      "bcc": "",
+      "attach_pdf": true
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+Subject: FINAL NOTICE: Invoice #{{invoice.invoice_number}} is 30 Days Overdue
+
+Dear {{customer.display_name}},
+
+This is a FINAL NOTICE that Invoice #{{invoice.invoice_number}} 
+for {{invoice.total}} is now 30 days overdue. 
+The due date was {{invoice.due_date}}.
+
+If payment is not received within the next 48 hours, 
+we may have to take further action.
+
+Please make the payment immediately.
+
+You can pay online using this link:
+{{invoice.payment_link}}
+
+Sincerely,
+Your Company Name

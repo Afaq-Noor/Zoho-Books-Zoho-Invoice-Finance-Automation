@@ -1,0 +1,15 @@
+Subject: Reminder: Invoice #{{invoice.invoice_number}} is 7 Days Overdue
+
+Dear {{customer.display_name}},
+
+This is a reminder that Invoice #{{invoice.invoice_number}} 
+for {{invoice.total}} is now 7 days overdue. 
+The invoice was due on {{invoice.due_date}}.
+
+Please process the payment as soon as possible.
+
+You can pay online using this link:
+{{invoice.payment_link}}
+
+Thank you,
+Your Company Name

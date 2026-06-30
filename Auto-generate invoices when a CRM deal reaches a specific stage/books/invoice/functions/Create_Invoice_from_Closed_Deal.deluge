@@ -1,0 +1,193 @@
+
+---
+
+# 📄 File 2: Deluge Function (Create_Invoice_from_Closed_Deal.deluge)
+
+```deluge
+// ============================================================
+// FUNCTION: Create_Invoice_from_Closed_Deal
+// DESCRIPTION: Creates invoice in Zoho Books when CRM deal is Closed Won
+// MODULE: Zoho CRM (Deals) → Zoho Books (Invoices)
+// AUTHOR: [Your Name]
+// DATE: 2026-06-25
+// ============================================================
+
+void automation.Create_Invoice_from_Closed_Deal(String ID)
+{
+    // ============================================================
+    // SECTION 1: Log Start and Get Deal Details
+    // ============================================================
+    
+    info "=== STARTING FUNCTION ===";
+    
+    dealID = ID;
+    dealInfo = zoho.crm.getRecordById("Deals", dealID);
+    dealName = dealInfo.get("Deal_Name");
+    dealAmount = dealInfo.get("Amount");
+    
+    info "Deal Name: " + dealName + " | Amount: " + dealAmount;
+    
+    // ============================================================
+    // SECTION 2: Extract Contact ID from Deal
+    // ============================================================
+    
+    contactMap = dealInfo.get("Contact_Name");
+    contactID = ifnull(contactMap, Map()).get("id").toLong();
+    
+    info "Contact ID: " + contactID;
+    
+    // ============================================================
+    // SECTION 3: Validate Contact Exists
+    // ============================================================
+    
+    if(contactID == 0)
+    {
+        info "ERROR: No Contact linked to Deal.";
+        return;
+    }
+    
+    // ============================================================
+    // SECTION 4: Get Contact Details
+    // ============================================================
+    
+    contactInfo = zoho.crm.getRecordById("Contacts", contactID);
+    contactEmail = ifnull(contactInfo.get("Email"), "");
+    
+    info "Contact Email: " + contactEmail;
+    
+    // ============================================================
+    // SECTION 5: Validate Contact Has Email
+    // ============================================================
+    
+    if(contactEmail == "")
+    {
+        info "ERROR: Contact has no Email.";
+        return;
+    }
+    
+    // ============================================================
+    // SECTION 6: Set Organization ID
+    // ============================================================
+    
+    // IMPORTANT: Replace with your Zoho Books Organization ID
+    // Found at: Zoho Books > Setup > Organization > Profile
+    orgID = "928196532";
+    
+    info "Organization ID: " + orgID;
+    
+    // ============================================================
+    // SECTION 7: Search for Existing Customer in Books
+    // ============================================================
+    
+    // No connection parameter needed - Zoho auto-detects Finance Suite
+    customerSearch = zoho.books.getRecords("contacts", orgID, {"email": contactEmail});
+    
+    info "Customer Search Response: " + customerSearch.toString();
+    
+    customerID = "";
+    
+    // ============================================================
+    // SECTION 8: Create Customer if Not Found
+    // ============================================================
+    
+    if(customerSearch.isEmpty() || customerSearch.get("contacts") == null || customerSearch.get("contacts").isEmpty())
+    {
+        info "Customer not found. Creating new customer...";
+        
+        customerMap = Map();
+        customerMap.put("contact_name", contactInfo.get("Full_Name"));
+        customerMap.put("email", contactEmail);
+        customerMap.put("phone", ifnull(contactInfo.get("Phone"), ""));
+        
+        info "Customer Map: " + customerMap.toString();
+        
+        // Create customer in Books
+        createCustomer = zoho.books.createRecord("contacts", orgID, customerMap);
+        
+        info "Create Customer Response: " + createCustomer.toString();
+        
+        if(createCustomer.get("contact") != null)
+        {
+            customerID = createCustomer.get("contact").get("contact_id");
+            info "New Customer ID: " + customerID;
+        }
+        else
+        {
+            info "ERROR: Failed to create customer.";
+            info "Response: " + createCustomer.toString();
+            return;
+        }
+    }
+    else
+    {
+        customerID = customerSearch.get("contacts").get(0).get("contact_id");
+        info "Existing Customer ID: " + customerID;
+    }
+    
+    // ============================================================
+    // SECTION 9: Validate Customer ID
+    // ============================================================
+    
+    if(customerID == "" || customerID == null)
+    {
+        info "ERROR: No customer ID available.";
+        return;
+    }
+    
+    // ============================================================
+    // SECTION 10: Build Invoice
+    // ============================================================
+    
+    invoiceMap = Map();
+    invoiceMap.put("customer_id", customerID);
+    invoiceMap.put("invoice_date", zoho.currentdate.toString("yyyy-MM-dd"));
+    invoiceMap.put("reference_number", dealName);
+    
+    // ============================================================
+    // SECTION 11: Build Line Items
+    // ============================================================
+    
+    // NOTE: Currently using deal name as product name
+    // Future enhancement: Fetch actual products from Deal_Products subform
+    // For proper product mapping, ensure product exists in Books
+    
+    lineItems = List();
+    itemMap = Map();
+    itemMap.put("name", dealName);
+    itemMap.put("quantity", 1);
+    itemMap.put("rate", dealAmount);
+    lineItems.add(itemMap);
+    invoiceMap.put("line_items", lineItems);
+    
+    info "Invoice Map: " + invoiceMap.toString();
+    
+    // ============================================================
+    // SECTION 12: Create Invoice in Zoho Books
+    // ============================================================
+    
+    // No connection parameter - auto-detects Finance Suite
+    createInvoice = zoho.books.createRecord("invoices", orgID, invoiceMap);
+    
+    info "Create Invoice Response: " + createInvoice.toString();
+    
+    // ============================================================
+    // SECTION 13: Check Result and Log Success/Failure
+    // ============================================================
+    
+    if(createInvoice.get("invoice") != null)
+    {
+        invoiceID = createInvoice.get("invoice").get("invoice_id");
+        info "✅ SUCCESS! Invoice Created with ID: " + invoiceID;
+    }
+    else
+    {
+        info "❌ ERROR: Failed to create invoice.";
+        info "Response: " + createInvoice.toString();
+    }
+    
+    info "=== FUNCTION COMPLETED ===";
+}
+
+// ============================================================
+// END OF FUNCTION
+// ============================================================

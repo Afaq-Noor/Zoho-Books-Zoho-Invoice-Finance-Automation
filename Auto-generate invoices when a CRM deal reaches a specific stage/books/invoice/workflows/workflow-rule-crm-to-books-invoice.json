@@ -1,0 +1,85 @@
+{
+  "workflow_rule": {
+    "name": "Generate Invoice on Closed Won",
+    "module": "Deals",
+    "description": "Triggers invoice creation in Zoho Books when a deal reaches Closed Won stage",
+    "trigger": {
+      "type": "on_record_action",
+      "actions": ["create", "edit"]
+    },
+    "condition": {
+      "field": "Potential Stage",
+      "operator": "is",
+      "value": "Closed Won"
+    },
+    "execute_once": true,
+    "actions": [
+      {
+        "type": "function",
+        "name": "Create_Invoice_from_Closed_Deal",
+        "api_name": "create_invoice_from_closed_deal",
+        "parameters": [
+          {
+            "name": "ID",
+            "source": "record_id",
+            "description": "The ID of the deal that triggered the workflow"
+          }
+        ]
+      }
+    ],
+    "metadata": {
+      "created_by": "[Your Name]",
+      "created_date": "2026-06-25",
+      "last_modified": "2026-06-25",
+      "version": "1.0",
+      "environment": "Production"
+    }
+  },
+  "configuration_notes": {
+    "prerequisites": [
+      "Zoho Finance Suite must be connected and active",
+      "Zoho Books Organization ID must be set in the function",
+      "Deals must have a linked Contact with a valid Email",
+      "Zoho Books must have matching products for line items"
+    ],
+    "testing": {
+      "steps": [
+        "Create test Contact with Email",
+        "Create test Deal linked to Contact",
+        "Set Deal Stage to 'Closed Won'",
+        "Check Workflow Execution log",
+        "Verify invoice appears in Zoho Books"
+      ]
+    },
+    "troubleshooting": {
+      "common_errors": [
+        {
+          "error": "Connection 'conn' does not exist",
+          "fix": "Remove connection parameter or use available connection name"
+        },
+        {
+          "error": "The request could not be authenticated",
+          "fix": "Re-authorize Zoho Finance Suite connection"
+        },
+        {
+          "error": "Contact has no Email",
+          "fix": "Add Email to the linked Contact"
+        },
+        {
+          "error": "Failed to create customer",
+          "fix": "Verify Books Organization ID and Contact details"
+        }
+      ]
+    }
+  },
+  "related_files": [
+    {
+      "type": "function",
+      "path": "functions/Create_Invoice_from_Closed_Deal.deluge"
+    },
+    {
+      "type": "documentation",
+      "path": "documentation/crm-to-books-invoice-automation.md"
+    }
+  ]
+}
